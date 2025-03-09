@@ -1,55 +1,52 @@
-# Command-Line To-Do List App
+import tkinter as tk
+from tkinter import messagebox
 
 tasks = []
 
-def show_menu():
-    print("\n--- To-Do List Menu ---")
-    print("1. View Tasks")
-    print("2. Add Task")
-    print("3. Delete Task")
-    print("4. Exit")
-
-def view_tasks():
-    if not tasks:
-        print("\nNo tasks found!")
-    else:
-        print("\nYour Tasks:")
-        for index, task in enumerate(tasks, start=1):
-            print(f"{index}. {task}")
+def show_tasks():
+    task_list.delete(0, tk.END)
+    for task in tasks:
+        task_list.insert(tk.END, task)
 
 def add_task():
-    task = input("\nEnter a new task: ")
-    tasks.append(task)
-    print(f"Task '{task}' added!")
+    task = task_entry.get()
+    if task:
+        tasks.append(task)
+        task_entry.delete(0, tk.END)
+        show_tasks()
+    else:
+        messagebox.showwarning("Warning", "You must enter a task.")
 
 def delete_task():
-    view_tasks()
     try:
-        task_num = int(input("\nEnter the task number to delete: "))
-        if 1 <= task_num <= len(tasks):
-            removed_task = tasks.pop(task_num - 1)
-            print(f"Task '{removed_task}' deleted!")
-        else:
-            print("Invalid task number!")
-    except ValueError:
-        print("Please enter a valid number!")
+        selected_task_index = task_list.curselection()[0]
+        tasks.pop(selected_task_index)
+        show_tasks()
+    except IndexError:
+        messagebox.showwarning("Warning", "You must select a task to delete.")
 
-def main():
-    while True:
-        show_menu()
-        choice = input("\nEnter your choice (1-4): ")
+def exit_app():
+    root.destroy()
 
-        if choice == "1":
-            view_tasks()
-        elif choice == "2":
-            add_task()
-        elif choice == "3":
-            delete_task()
-        elif choice == "4":
-            print("Goodbye!")
-            break
-        else:
-            print("Invalid choice. Please try again.")
+root = tk.Tk()
+root.title("To-Do List App")
 
-if __name__ == "__main__":
-    main()
+frame = tk.Frame(root)
+frame.pack(pady=10)
+
+task_entry = tk.Entry(frame, width=50)
+task_entry.pack(side=tk.LEFT, padx=10)
+
+add_button = tk.Button(frame, text="Add Task", command=add_task)
+add_button.pack(side=tk.LEFT)
+
+task_list = tk.Listbox(root, width=50, height=10)
+task_list.pack(pady=10)
+
+delete_button = tk.Button(root, text="Delete Task", command=delete_task)
+delete_button.pack(pady=5)
+
+exit_button = tk.Button(root, text="Exit", command=exit_app)
+exit_button.pack(pady=5)
+
+root.mainloop()
