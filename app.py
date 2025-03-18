@@ -50,7 +50,6 @@ def show_tasks():
     if selected_index is not None and selected_index < task_list.size():
         task_list.select_set(selected_index)  # Re-select the previously selected task
 
-
 # Add a new task
 def add_task():
     task_text = task_entry.get()
@@ -70,7 +69,11 @@ def add_task():
 def delete_task():
     try:
         selected_index = task_list.curselection()[0]
-        del tasks[selected_index]  # Delete the task from the list
+        task_text = task_list.get(selected_index).split("] ")[1].split(" (Due:")[0]
+        for task in tasks:
+            if task["text"] == task_text:
+                tasks.remove(task)
+                break
         save_tasks()  # Save the updated task list
         animate_button(delete_button)  # Add animation on task delete
     except IndexError:
@@ -80,26 +83,32 @@ def delete_task():
 def toggle_task():
     try:
         selected_index = task_list.curselection()[0]
-        task = tasks[selected_index]
-        task["completed"] = not task["completed"]  # Toggle completion status
+        task_text = task_list.get(selected_index).split("] ")[1].split(" (Due:")[0]
+        for task in tasks:
+            if task["text"] == task_text:
+                task["completed"] = not task["completed"]  # Toggle completion status
+                break
         save_tasks()  # Save the updated task list
         animate_button(toggle_button)  # Add animation on task toggle
     except IndexError:
         messagebox.showwarning("Warning", "You must select a task.")
 
-
 # Edit a selected task
 def edit_task():
     try:
         selected_index = task_list.curselection()[0]
+        task_text = task_list.get(selected_index).split("] ")[1].split(" (Due:")[0]
         new_task_text = task_entry.get()
         new_due_date = due_date_entry.get_date()  # Get the selected date from the calendar widget
         new_priority = priority_var.get()
 
         if new_task_text and new_due_date:
-            tasks[selected_index]["text"] = new_task_text
-            tasks[selected_index]["due_date"] = new_due_date.strftime('%Y-%m-%d')
-            tasks[selected_index]["priority"] = new_priority
+            for task in tasks:
+                if task["text"] == task_text:
+                    task["text"] = new_task_text
+                    task["due_date"] = new_due_date.strftime('%Y-%m-%d')
+                    task["priority"] = new_priority
+                    break
             task_entry.delete(0, tk.END)
             due_date_entry.set_date(datetime.today())  # Reset the date picker to today after editing the task
             save_tasks()
