@@ -1,1 +1,1 @@
-[{"text": "hello", "completed": false, "due_date": "YYYY-MM-DD", "priority": "Medium"}, {"text": "hello", "completed": false, "due_date": "today", "priority": "Medium"}]
+[{"text": "`1", "completed": false, "due_date": "2025-03-18", "priority": "Medium"}, {"text": "2", "completed": false, "due_date": "2025-03-18", "priority": "Medium"}, {"text": "3", "completed": false, "due_date": "2025-03-18", "priority": "High"}]
